@@ -1,28 +1,26 @@
-frequency: 50
+frequency: 100
 sensor_timeout: 0.1
 two_d_mode: false
-transform_time_offset: 0.0
-
 publish_tf: true
 
 # Sensor sources
 #odom0: /odom
-imu0: /imu/data
+imu0: /sensors/imu/data
 
 # These boolean arrays tell the EKF which parts of the sensor message to use 
 # when updating its state estimate. Each index in the array corresponds to one 
 # element of the state vector, which is typically ordered like this:
 # 1. Position: x, y, z
 # 2. Orientation: roll, pitch, yaw
-# 3. Linear Velocity: x_dot, y_dot, z_dot
+# 3. Linear Velocity: x_dot, y_dot, z_dot 
 # 4. Angular Velocity: roll_dot, pitch_dot, yaw_dot
 # 5. (Optional) Acceleration: x_accel, y_accel, z_accel
 
-# IMU confguration
+# IMU confguration; NOTE: We left (3) and (4) unchecked because these may have a tendency to have noise, and other sensors can provide these readings (e.g. wheel/visual odometry).
 imu0_config: [false, false, false,
               true,  true,  true,
               false, false, false,
-              true, true, false,
+              true,  true,  false,
               false, false, false]
 imu0_differential: false
 

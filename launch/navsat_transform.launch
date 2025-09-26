@@ -3,34 +3,33 @@
 
     <!-- Frequency at which the node computes a transformation -->
     <param name="frequency" value="10" />  
-
     <!-- Delay to account for latency in the GPS data (in seconds) -->
-    <param name="delay" value="3.0" />
+    <param name="delay" value="1.0" />
+     <!-- Should the node wait for a GPS datum before starting? -->
+    <param name="wait_for_datum" value="false" />
 
+    <!-- Use the IMU's yawrqt_tf_tree
+    directly or optionally fuse with odometry yaw (not IMU yaw) -->
+    <param name="use_odometry_yaw" value="false" />  
     <!-- Magnetic declination (in radians) for your location -->
     <param name="magnetic_declination_radians" value="0.269" />  <!-- default value for Victoria, BC -->
-
     <!-- Yaw offset to align the transform with your robot's heading -->
-    <param name="yaw_offset" value="0.0" />  
-
+    <param name="yaw_offset" value="1.5707963267948966" />  <!-- rotate BNO085 IMU's 0°(North) → ENU 0°(East) -->
     <!-- If true, it assumes the robot is always at zero altitude -->
     <param name="zero_altitude" value="true" /> 
 
     <!-- If true, the node broadcasts a UTM transform -->
-    <param name="broadcast_utm_transform" value="true" /> 
-
+    <param name="broadcast_utm_transform" value="false" /> 
     <!-- If true, it publishes a filtered GPS message that can be used as input to the global EKF -->
     <param name="publish_filtered_gps" value="true" />
 
-    <!-- Use the IMU's yawrqt_tf_tree
- directly or optionally fuse with odometry yaw -->
-    <param name="use_odometry_yaw" value="true" />  
+    <!-- Outputs -->
+    <remap from="odometry/gps" to="/localization/navsat/odometry"/> <!-- since this meshes better with our naming scheme -->
+    <remap from="gps/filtered" to="/localization/navsat/pose"/>
 
-    <!-- Should the node wait for a GPS datum before starting? -->
-    <param name="wait_for_datum" value="false" />
-    
-    <!-- Topic names for input GPS and IMU data -->
-    <param name="imu0" value="/imu/data" />
-    <param name="gps0" value="/gps/fix" />
+    <!-- Inputs -->
+    <remap from="/imu/data"          to="/sensors/imu/data"/>  <!-- the IMU driver -->
+    <remap from="gps/fix"           to="/sensors/gps/fix"/>    <!-- the GPS driver -->
+    <remap from="odometry/filtered" to="/localization/ekf_local/odometry"/>   <!-- from ekf_local -->
   </node>
 </launch>

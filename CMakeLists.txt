@@ -110,6 +110,7 @@ include_directories(
 catkin_install_python(PROGRAMS
      nodes/odom/gps.py
      nodes/odom/imu.py
+     nodes/odom/imu_viz.py  #TEMP
      DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 # Optionally, install your launch files so they can be run via roslaunch.

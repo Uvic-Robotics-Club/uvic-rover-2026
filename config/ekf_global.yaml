@@ -1,13 +1,11 @@
-frequency: 5
-sensor_timeout: 0.2
+frequency: 15
+sensor_timeout: 0.5
 two_d_mode: true
-transform_time_offset: 0.0
-
 publish_tf: true
 
 # Sensor sources
-imu0: /imu/data
-gps0: /gps/fix
+imu0: /sensors/imu/data
+odom0: /localization/navsat/odometry  # odometry/gps is the default name from navsat_transform, but we remapped it to be cleaner.
 
 # These boolean arrays tell the EKF which parts of the sensor message to use 
 # when updating its state estimate. Each index in the array corresponds to one 
@@ -18,15 +16,15 @@ gps0: /gps/fix
 # 4. Angular Velocity: roll_dot, pitch_dot, yaw_dot
 # 5. (Optional) Acceleration: x_accel, y_accel, z_accel
 
-# IMU configuration
-imu0_config: [false, false, false,
-              true,  true,  true,
-              false, false, false,
-              true, true, false,
-              false, false, false]
+# IMU confguration; NOTE: We left (3) and (4) unchecked because these may have a tendency to have noise, and other sensors can provide these readings (e.g. wheel/visual odometry).
+imu0_config:  [false, false, false,
+               true,  true,  true,
+               false, false, false,
+               true,  true,  true,
+               false, false, false]
 
 # GPS configuration
-gps0_config: [true, true, false,
+odom0_config: [true,  true,  false,    # x,y only (2D)
               false, false, false,
               false, false, false,
               false, false, false,

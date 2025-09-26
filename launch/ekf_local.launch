@@ -1,7 +1,7 @@
 <launch>
     <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization_local" clear_params="true" respawn="true">
         <rosparam command="load" file="$(find uvic_rover)/config/ekf_local.yaml" />
-        <remap from="/odometry/filtered" to="/odometry/filtered_local"/>
+        <remap from="/odometry/filtered" to="/localization/ekf_local/odometry"/>
         <!--Without this remap, both EKFs might conflict, leading to incorrect localization results.-->
     </node>
 </launch>
