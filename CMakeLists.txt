@@ -125,5 +125,3 @@ install(DIRECTORY launch/
 # if (COMMAND add_tests_macro)
 #     add_tests_macro()
 # endif ()
-
-add_subdirectory(asy_robotic_arm_2026)
