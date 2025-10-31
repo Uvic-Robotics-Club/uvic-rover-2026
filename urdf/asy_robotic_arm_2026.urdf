@@ -249,7 +249,7 @@
   </link>
   <joint
     name="joint4"
-    type="continuous">
+    type="fixed">
     <origin
       xyz="0.053502 0 -0.035471"
       rpy="3.1416 1.5708 3.1416" />
@@ -258,7 +258,7 @@
     <child
       link="Link4" />
     <axis
-      xyz="0 0 1" />
+      xyz="0 0 0" />
   </joint>
   <link
     name="Link5">
