@@ -17,7 +17,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://uvicarm2024/meshes/base_link.STL" />
+                <mesh filename="package://uvic_rover/meshes/base_link.STL" />
             </geometry>
             <material name="">
                 <color rgba="0.89804 0.91765 0.92941 1" />
@@ -26,7 +26,7 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://uvicarm2024/meshes/base_link.STL" />
+                <mesh filename="package://uvic_rover/meshes/base_link.STL" />
             </geometry>
         </collision>
     </link>
@@ -39,7 +39,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://uvicarm2024/meshes/link1.STL" />
+                <mesh filename="package://uvic_rover/meshes/link1.STL" />
             </geometry>
             <material name="">
                 <color rgba="0.79216 0.81961 0.93333 1" />
@@ -48,7 +48,7 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://uvicarm2024/meshes/link1.STL" />
+                <mesh filename="package://uvic_rover/meshes/link1.STL" />
             </geometry>
         </collision>
     </link>
@@ -68,7 +68,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://uvicarm2024/meshes/link2.STL" />
+                <mesh filename="package://uvic_rover/meshes/link2.STL" />
             </geometry>
             <material name="">
                 <color rgba="0.79216 0.81961 0.93333 1" />
@@ -77,7 +77,7 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://uvicarm2024/meshes/link2.STL" />
+                <mesh filename="package://uvic_rover/meshes/link2.STL" />
             </geometry>
         </collision>
     </link>
@@ -97,7 +97,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://uvicarm2024/meshes/link3.STL" />
+                <mesh filename="package://uvic_rover/meshes/link3.STL" />
             </geometry>
             <material name="">
                 <color rgba="0.79216 0.81961 0.93333 1" />
@@ -106,7 +106,7 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://uvicarm2024/meshes/link3.STL" />
+                <mesh filename="package://uvic_rover/meshes/link3.STL" />
             </geometry>
         </collision>
     </link>
@@ -126,7 +126,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://uvicarm2024/meshes/link4.STL" />
+                <mesh filename="package://uvic_rover/meshes/link4.STL" />
             </geometry>
             <material name="">
                 <color rgba="0.79216 0.81961 0.93333 1" />
@@ -135,7 +135,7 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://uvicarm2024/meshes/link4.STL" />
+                <mesh filename="package://uvic_rover/meshes/link4.STL" />
             </geometry>
         </collision>
     </link>
@@ -155,7 +155,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://uvicarm2024/meshes/link5.STL" />
+                <mesh filename="package://uvic_rover/meshes/link5.STL" />
             </geometry>
             <material name="">
                 <color rgba="0.79216 0.81961 0.93333 1" />
@@ -164,7 +164,7 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://uvicarm2024/meshes/link5.STL" />
+                <mesh filename="package://uvic_rover/meshes/link5.STL" />
             </geometry>
         </collision>
     </link>
@@ -184,7 +184,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://uvicarm2024/meshes/end_effector.STL" />
+                <mesh filename="package://uvic_rover/meshes/end_effector.STL" />
             </geometry>
             <material name="">
                 <color rgba="0.79216 0.81961 0.93333 1" />
@@ -193,7 +193,7 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://uvicarm2024/meshes/end_effector.STL" />
+                <mesh filename="package://uvic_rover/meshes/end_effector.STL" />
             </geometry>
         </collision>
     </link>
