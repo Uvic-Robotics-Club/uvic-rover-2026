@@ -1,375 +1,272 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
      Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
-<robot
-  name="uvic_rover">
-  <link name="dummy" />
+<robot name="ASY, ROBOTIC ARM 2024, URDF">
+    <link name="dummy" />
     <joint name="dummy_joint" type="fixed">
         <parent link="dummy" />
         <child link="base_link" />
     </joint>
-  <link
-    name="base_link">
-    <inertial>
-      <origin
-        xyz="-4.9468E-17 0.0044613 -3.4723E-18"
-        rpy="0 0 0" />
-      <mass
-        value="0.21974" />
-      <inertia
-        ixx="0.00022426"
-        ixy="-1.0831E-20"
-        ixz="1.6977E-20"
-        iyy="0.00044509"
-        iyz="5.0538E-22"
-        izz="0.00022426" />
-    </inertial>
-    <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://uvic_rover/meshes/base_link.STL" />
-      </geometry>
-      <material
-        name="">
-        <color
-          rgba="0.89804 0.91765 0.92941 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://uvic_rover/meshes/base_link.STL" />
-      </geometry>
-    </collision>
-  </link>
-  <joint
-    name="joint1"
-    type="fixed">
-    <origin
-      xyz="0 0 0.0643"
-      rpy="3.1416 0 -1.5708" />
-    <parent link="base_link" />
-    <child link="Link1" />
-    <axis
-      xyz="0 0 0" />
-  </joint>
-  <link
-    name="Link1">
-    <inertial>
-      <origin
-        xyz="-9.6291E-06 0.00088403 0.0090814"
-        rpy="0 0 0" />
-      <mass
-        value="2.0415" />
-      <inertia
-        ixx="0.0018245"
-        ixy="-2.471E-07"
-        ixz="-5.2801E-07"
-        iyy="0.0018291"
-        iyz="0.00010038"
-        izz="0.0016585" />
-    </inertial>
-    <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://uvic_rover/meshes/Link1.STL" />
-      </geometry>
-      <material
-        name="">
-        <color
-          rgba="0.52941 0.54902 0.54902 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://uvic_rover/meshes/Link1.STL" />
-      </geometry>
-    </collision>
-  </link>
-
-  <link
-    name="Link2">
-    <inertial>
-      <origin
-        xyz="0.13882 0.079275 -0.045933"
-        rpy="0 0 0" />
-      <mass
-        value="4.2029" />
-      <inertia
-        ixx="0.00516"
-        ixy="-0.0034177"
-        ixz="-2.4244E-18"
-        iyy="0.0090244"
-        iyz="6.3238E-06"
-        izz="0.010906" />
-    </inertial>
-    <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://uvic_rover/meshes/Link2.STL" />
-      </geometry>
-      <material
-        name="">
-        <color
-          rgba="0.52941 0.54902 0.54902 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://uvic_rover/meshes/Link2.STL" />
-      </geometry>
-    </collision>
-  </link>
-  <joint
-    name="joint2"
-    type="continuous">
-    <origin
-      xyz="-0.00025883 0.04747 -0.0132"
-      rpy="1.5708 1.5284 0.0054525" />
-    <parent
-      link="Link1" />
-    <child
-      link="Link2" />
-    <axis
-      xyz="0 0 1" />
-  </joint>
-  <link
-    name="Link3">
-    <inertial>
-      <origin
-        xyz="0.021416 9.2756E-05 -0.035252"
-        rpy="0 0 0" />
-      <mass
-        value="1.1761" />
-      <inertia
-        ixx="0.00056704"
-        ixy="-2.3156E-07"
-        ixz="4.1869E-05"
-        iyy="0.00053345"
-        iyz="2.4901E-06"
-        izz="0.00055842" />
-    </inertial>
-    <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://uvic_rover/meshes/Link3.STL" />
-      </geometry>
-      <material
-        name="">
-        <color
-          rgba="0 0 1 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://uvic_rover/meshes/Link3.STL" />
-      </geometry>
-    </collision>
-  </link>
-  <joint
-    name="joint3"
-    type="continuous">
-    <origin
-      xyz="0.27765 0.1603 0"
-      rpy="-3.1416 0 1.5284" />
-    <parent
-      link="Link2" />
-    <child
-      link="Link3" />
-    <axis
-      xyz="0 0 1" />
-  </joint>
-  <link
-    name="Link4">
-    <inertial>
-      <origin
-        xyz="0.057468 -0.00030635 0.20823"
-        rpy="0 0 0" />
-      <mass
-        value="1.1715" />
-      <inertia
-        ixx="0.00052055"
-        ixy="-9.0675E-07"
-        ixz="-3.0947E-05"
-        iyy="0.000509"
-        iyz="-7.6065E-06"
-        izz="0.00038109" />
-    </inertial>
-    <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://uvic_rover/meshes/Link4.STL" />
-      </geometry>
-      <material
-        name="">
-        <color
-          rgba="1 1 1 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://uvic_rover/meshes/Link4.STL" />
-      </geometry>
-    </collision>
-  </link>
-  <joint
-    name="joint4"
-    type="fixed">
-    <origin
-      xyz="0.053502 0 -0.035471"
-      rpy="3.1416 1.5708 3.1416" />
-    <parent
-      link="Link3" />
-    <child
-      link="Link4" />
-    <axis
-      xyz="0 0 0" />
-  </joint>
-  <link
-    name="Link5">
-    <inertial>
-      <origin
-        xyz="-0.00026497 0.00022114 0.03105"
-        rpy="0 0 0" />
-      <mass
-        value="1.0742" />
-      <inertia
-        ixx="0.00038618"
-        ixy="8.1369E-07"
-        ixz="4.3135E-06"
-        iyy="0.0003666"
-        iyz="1.2385E-05"
-        izz="0.00040251" />
-    </inertial>
-    <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://uvic_rover/meshes/Link5.STL" />
-      </geometry>
-      <material
-        name="">
-        <color
-          rgba="0.52941 0.54902 0.54902 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://uvic_rover/meshes/Link5.STL" />
-      </geometry>
-    </collision>
-  </link>
-  <joint
-    name="joint5"
-    type="revolute">
-    <origin
-      xyz="0 0 0.2615"
-      rpy="-3.1416 0 -1.9635" />
-    <parent
-      link="Link4" />
-    <child
-      link="Link5" />
-    <!-- Fix invalid joint axis (was 0 0 0 causing NaN TF). Use Z axis. -->
-    <axis
-      xyz="0 0 1" />
-    <limit
-      lower="0"
-      upper="0"
-      effort="0"
-      velocity="0" />
-  </joint>
-  <link
-    name="End_effector">
-    <inertial>
-      <origin
-        xyz="-0.042602 0.00018998 0.00011451"
-        rpy="0 0 0" />
-      <mass
-        value="0.54279" />
-      <inertia
-        ixx="0.00018116"
-        ixy="-5.002E-06"
-        ixz="1.6477E-08"
-        iyy="0.00040156"
-        iyz="3.6648E-08"
-        izz="0.00036045" />
-    </inertial>
-    <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://uvic_rover/meshes/End_effector.STL" />
-      </geometry>
-      <material
-        name="">
-        <color
-          rgba="0.25098 0.25098 0.25098 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://uvic_rover/meshes/End_effector.STL" />
-      </geometry>
-    </collision>
-  </link>
-  <joint
-    name="joint_end_effector"
-    type="fixed">
-    <origin
-      xyz="0 0 -0.1405"
-      rpy="0.53499 1.5708 1.7134" />
-    <parent
-      link="Link5" />
-    <child
-      link="End_effector" />
-    <axis
-      xyz="0 0 0" />
-  </joint>
+    <link name="base_link">
+        <inertial>
+            <origin xyz="-4.9276E-17 0.0044613 -3.3732E-18" rpy="0 0 0" />
+            <mass value="0.21974" />
+            <inertia ixx="0.00022426" ixy="-1.0851E-20" ixz="1.6857E-20" iyy="0.00044509" iyz="4.8961E-22" izz="0.00022426" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://uvicarm2024/meshes/base_link.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.89804 0.91765 0.92941 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://uvicarm2024/meshes/base_link.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="link1">
+        <inertial>
+            <origin xyz="2.3204E-07 0.046448 0.0034623" rpy="0 0 0" />
+            <mass value="0.32157" />
+            <inertia ixx="0.00032758" ixy="-7.8012E-10" ixz="5.8805E-10" iyy="0.00032083" iyz="-3.6414E-05" izz="0.00033922" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://uvicarm2024/meshes/link1.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.79216 0.81961 0.93333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://uvicarm2024/meshes/link1.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="joint0" type="continuous">
+        <origin xyz="0 0 0.007" rpy="1.5708 0 0" />
+        <parent link="base_link" />
+        <child link="link1" />
+        <axis xyz="0 1 0" />
+        <limit effort="50" velocity="1" />
+    </joint>
+    <link name="link2">
+        <inertial>
+            <origin xyz="0.16281 5.87E-07 0.042378" rpy="0 0 0" />
+            <mass value="1.1397" />
+            <inertia ixx="0.001115" ixy="-1.1442E-08" ixz="7.7228E-06" iyy="0.0019366" iyz="-2.5714E-08" izz="0.0022512" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://uvicarm2024/meshes/link2.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.79216 0.81961 0.93333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://uvicarm2024/meshes/link2.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="joint1" type="revolute">
+        <origin xyz="0 0.0705 0.049" rpy="0 0 1.5708" />
+        <parent link="link1" />
+        <child link="link2" />
+        <axis xyz="0 0 1" />
+        <limit lower="0" upper="3.14" effort="50" velocity="1" />
+    </joint>
+    <link name="link3">
+        <inertial>
+            <origin xyz="3.3228E-07 0.025566 -0.021889" rpy="0 0 0" />
+            <mass value="0.24583" />
+            <inertia ixx="0.00017178" ixy="-2.1704E-09" ixz="-6.941E-10" iyy="0.00020712" iyz="2.6575E-05" izz="0.00018355" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://uvicarm2024/meshes/link3.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.79216 0.81961 0.93333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://uvicarm2024/meshes/link3.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="joint2" type="continuous">
+        <origin xyz="0.32 0 0" rpy="-1.5708 0 0" />
+        <parent link="link2" />
+        <child link="link3" />
+        <axis xyz="0 1 0" />
+        <limit effort="50" velocity="1" />
+    </joint>
+    <link name="link4">
+        <inertial>
+            <origin xyz="0.0471 -9.4291E-06 0.18908" rpy="0 0 0" />
+            <mass value="0.18633" />
+            <inertia ixx="0.0001082" ixy="-5.3053E-08" ixz="-1.1032E-05" iyy="0.00010897" iyz="-3.7845E-08" izz="5.8446E-05" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://uvicarm2024/meshes/link4.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.79216 0.81961 0.93333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://uvicarm2024/meshes/link4.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="joint3" type="continuous">
+        <origin xyz="0 0.029 -0.0575" rpy="-3.1416 0 1.5708" />
+        <parent link="link3" />
+        <child link="link4" />
+        <axis xyz="0 0 1" />
+        <limit effort="10" velocity="1" />
+    </joint>
+    <link name="link5">
+        <inertial>
+            <origin xyz="6.7608E-07 -0.00103 -0.0094618" rpy="0 0 0" />
+            <mass value="0.14869" />
+            <inertia ixx="5.6669E-05" ixy="-1.9664E-09" ixz="3.2886E-09" iyy="5.4601E-05" iyz="4.6671E-06" izz="5.8844E-05" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://uvicarm2024/meshes/link5.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.79216 0.81961 0.93333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://uvicarm2024/meshes/link5.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="joint4" type="continuous">
+        <origin xyz="0 0 0.222" rpy="3.1416 0 -1.5708" />
+        <parent link="link4" />
+        <child link="link5" />
+        <axis xyz="0 1 0" />
+        <limit effort="10" velocity="1" />
+    </joint>
+    <link name="end_effector">
+        <inertial>
+            <origin xyz="-9.4522E-05 7.9004E-05 0.098273" rpy="0 0 0" />
+            <mass value="0.40215" />
+            <inertia ixx="0.00027994" ixy="-2.8409E-08" ixz="-1.2519E-08" iyy="0.00031653" iyz="-3.8933E-06" izz="0.00014656" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://uvicarm2024/meshes/end_effector.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.79216 0.81961 0.93333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://uvicarm2024/meshes/end_effector.STL" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="end_effector_joint" type="continuous">
+        <origin xyz="0 0 -0.0385" rpy="3.1416 0 -1.5708" />
+        <parent link="link5" />
+        <child link="end_effector" />
+        <axis xyz="0 0 1" />
+        <limit effort="10" velocity="1" />
+    </joint>
+    <transmission name="trans_joint0">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint0">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="joint0_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_joint1">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint1">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="joint1_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_joint2">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint2">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="joint2_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_joint3">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint3">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="joint3_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_joint4">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint4">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="joint4_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_end_effector_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="end_effector_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="end_effector_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/</robotNamespace>
+        </plugin>
+    </gazebo>
 </robot>
