@@ -24,7 +24,6 @@ class Watchdog:
         """Reset the watchdog timer."""
         self.last_msg_time = time.time()
         if self.triggered:
-            # rospy.loginfo("cmd_vel message received")
             self.triggered = False
             self.watchdog_pub.publish(False)
 
