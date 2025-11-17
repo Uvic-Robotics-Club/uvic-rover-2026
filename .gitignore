@@ -21,6 +21,7 @@ cmake-build-debug
 **/.vscode/
 **/.idea/
 cmake-build*/
+.devcontainer/
 
 # CI/CD act library
 bin/
