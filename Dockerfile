@@ -1,21 +1,19 @@
-# Base image: Ubuntu 20.04
-FROM ubuntu:20.04
+#########################################################
+# Development Image
+#########################################################
 
+# Base image: Ubuntu 20.04
+FROM osrf/ros:noetic-desktop-full AS dev
+
+LABEL maintainer="UVic Robotics <uvic.robotics@gmail.com>"
 # Avoid interactive prompts during apt installs
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Set locale + timezone (For proper Ubuntu behavior)
-RUN apt-get update && apt-get install -y locales tzdata \
-    && locale-gen en_US.UTF-8 \
-    && update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 \
-    && ln -fs /usr/share/zoneinfo/UTC /etc/localtime \
-    && dpkg-reconfigure --frontend noninteractive tzdata \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install text editors
+# Basic dev tools
 RUN apt-get update && apt-get install -y \
-    nano \
-    vim \
+    nano vim curl git git-lfs python3-pip build-essential \
+    lsb-release gnupg2 sudo \
+    x11-apps mesa-utils libgl1-mesa-glx \
     && rm -rf /var/lib/apt/lists/*
 
 # Create a non-root user
@@ -25,35 +23,9 @@ ARG USER_GID=$USER_UID
 
 RUN groupadd --gid $USER_GID $USERNAME \
     && useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    && mkdir /home/$USERNAME/.config && chown $USER_UID:$USER_GID /home/$USERNAME/.config
-
-# Set up sudo
-RUN apt-get update \
-    && apt-get install -y sudo \
+    && mkdir /home/$USERNAME/.config && chown $USER_UID:$USER_GID /home/$USERNAME/.config \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL >> /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install basic tools
-RUN apt-get update && apt-get install -y \
-    curl git git-lfs python3-pip build-essential lsb-release gnupg2 \
-    && rm -rf /var/lib/apt/lists/*
-
-# Add the ROS Noetic package repository and key
-RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list' \
-    && curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
-
-# Install ROS Noetic and catkin tools
-RUN apt-get update && apt-get install -y \
-    ros-noetic-desktop python3-catkin-tools python3-rosdep \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update && apt-get install -y \
-    x11-apps mesa-utils libgl1-mesa-glx \
-    && rm -rf /var/lib/apt/lists/*
-
-# Initialize rosdep
-RUN rosdep init && rosdep update
+    && chmod 0440 /etc/sudoers.d/$USERNAME
 
 # Set up environment variables for ROS
 RUN echo "source /opt/ros/noetic/setup.bash" >> /root/.bashrc \
@@ -66,3 +38,35 @@ RUN mkdir -p src
 
 # Default command
 CMD ["/bin/bash"]
+
+#########################################################
+# CI/CD Image
+#########################################################
+FROM ros:noetic-ros-base AS ci
+
+LABEL maintainer="UVicRobotics <uvic.robotics@gmail.com>"
+# Prevent interactive prompts during apt installations
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install minimal tools + runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git python3-pip \
+    ros-noetic-gps-common \
+    ros-noetic-robot-localization \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create the catkin workspace directory
+RUN mkdir -p /catkin_ws/src
+WORKDIR /catkin_ws
+
+# Copy source code
+COPY . src/uvic_rover/
+
+# Install dependencies listed in package.xml for all packages in the src 
+RUN rosdep update && \
+    rosdep install --from-paths src --ignore-src -r -y
+
+# Build the catkin workspace
+RUN /bin/bash -c "source /opt/ros/noetic/setup.bash && catkin_make"
+
+CMD ["/bin/bash", "-c", "source /catkin_ws/devel/setup.bash && bash"]
