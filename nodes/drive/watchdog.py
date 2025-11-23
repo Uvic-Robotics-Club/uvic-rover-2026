@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 import rospy
+from std_msgs.msg import String
 from std_msgs.msg import Bool
-from geometry_msgs.msg import Twist
 import time
 
 class Watchdog:
@@ -11,8 +11,8 @@ class Watchdog:
         self.last_msg_time = time.time()
         self.triggered = False
 
-        # Publish to a topic similar to /robot/watchdogResets
-        self.watchdog_pub = rospy.Publisher("/robot/watchdogResets", Bool, queue_size=1)
+        # Publish to "drive/watchdogResets"
+        self.watchdog_pub = rospy.Publisher("drive/watchdogResets", Bool, queue_size=1)
 
         # Subscribe to "/drive/cmd_vel"
         self.watchdog_sub = rospy.Subscriber("/drive/cmd_vel", String, self.cmdVelCallback)

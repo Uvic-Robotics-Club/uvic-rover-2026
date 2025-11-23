@@ -2,8 +2,8 @@
 
 import rospy
 from std_msgs.msg import String
-from sensor_msgs.msg import Joy 
 from std_msgs.msg import Bool
+from sensor_msgs.msg import Joy 
 from DriveHAL import DriveHAL
 
 left_y_out = ""
@@ -18,10 +18,10 @@ MIN_SPEED = -10
 hal = DriveHAL("simulation")
 
 #
-# Assuming deadzone is applied in Joy
 # Exponential curve applied to left_y_out, right_y_out in joyCallback,
 # Manual E-Stop and watchdog timeout applied in joyCallback,
-# Speed scaling applied within cmdVelCallback
+# Speed scaling applied within joyCallback
+# Sends to HAL using sendCommand 
 #
 
 def MotorCommand():
@@ -29,7 +29,7 @@ def MotorCommand():
 
     cmdVelPublisher = rospy.Publisher("/drive/cmd_vel", String, queue_size=10)
     rospy.Subscriber("/joy_processed", Joy, joyCallback)
-    rospy.Subscriber("/robot/watchdogResets", Bool, watchDogCallback)
+    rospy.Subscriber("/drive/watchdogResets", Bool, watchDogCallback)
     rate = rospy.Rate(10)
 
     while not rospy.is_shutdown():
@@ -37,8 +37,8 @@ def MotorCommand():
         sendCommand(left_y_out, right_y_out)
         # Publish/log final drive commands with response curves:
         cmd_vel_msg = "Left speed: %s, Right speed: %s" % (left_y_out, right_y_out)
-        # rospy.loginfo(cmd_vel_msg)
         cmdVelPublisher.publish(cmd_vel_msg)
+        # rospy.loginfo(cmd_vel_msg)
         rate.sleep()
 
 
@@ -64,14 +64,17 @@ def joyCallback(msg):
     left_y_out = 1.2*(1.043**left_y_in) - 1.2 + 0.2*left_y_in
     right_y_out = 1.2*(1.043**right_y_in) - 1.2 + 0.2*right_y_in
 
+    # Apply safety check
+    left_y_out = checkSafety(left_y_out)
+    right_y_out = checkSafety(right_y_out)
+
 
 def sendCommand(left_y_out, right_y_out):
-    # Publish speeds to /drive/cmd_vel
+    # Send processed speeds to HAL
     if estopFlag or watchdogFlag:
         hal.stop_motors()
     else:
-        # Apply safety check, send to HAL
-        hal.set_motor_speeds(checkSafety(left_y_out), checkSafety(right_y_out)) 
+        hal.set_motor_speeds(left_y_out, right_y_out) 
 
 def checkSafety(speed):
     # Implement speed scaling
