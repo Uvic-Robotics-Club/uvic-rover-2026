@@ -3,7 +3,8 @@
 import rospy
 from std_msgs.msg import String
 from sensor_msgs.msg import Joy 
-from DriveHAL.py import DriveHAL
+from std_msgs.msg import Bool
+from DriveHAL import DriveHAL
 
 left_y_out = ""
 right_y_out = ""
@@ -26,39 +27,45 @@ hal = DriveHAL("simulation")
 def MotorCommand():
     rospy.init_node("MotorCommand")
 
-    rospy.Subscriber("/drive/cmd_vel", String, cmdVelCallback)
-    rospy.Subscriber("/joy", Joy, joyCallback)
-    rospy.Subscriber("/robot/watchdogResets", bool, watchDogCallback)
+    cmdVelPublisher = rospy.Publisher("/drive/cmd_vel", String, queue_size=10)
+    rospy.Subscriber("/joy_processed", Joy, joyCallback)
+    rospy.Subscriber("/robot/watchdogResets", Bool, watchDogCallback)
     rate = rospy.Rate(10)
 
     while not rospy.is_shutdown():
-        # log final drive commands with response curves:
-        rospy.loginfo("Left speed: %s, Right speed: %s", left_y_out, right_y_out) 
-        rospy.spin()
+        # Send command to HAL
+        sendCommand(left_y_out, right_y_out)
+        # Publish/log final drive commands with response curves:
+        cmd_vel_msg = "Left speed: %s, Right speed: %s" % (left_y_out, right_y_out)
+        # rospy.loginfo(cmd_vel_msg)
+        cmdVelPublisher.publish(cmd_vel_msg)
+        rate.sleep()
 
 
 def watchDogCallback(msg):
     # Check for watchdog timeout
+    global watchdogFlag
     watchdogFlag = msg
 
 
 def joyCallback(msg):
     # Ignore x-axis for tank steering
+    global estopFlag, left_y_out, right_y_out
     if msg.button[0]: # A button triggers manual estop
         estopFlag = True
         return
     
-    left_y_in = msg.axes[1] # assuming axes[1] is left joysticks y axis
-    right_y_in = msg.axes[4] # assuming axes[4] is right joysticks y axis
+    left_y_in = msg.axes[1] # left joysticks y axis
+    right_y_in = msg.axes[4] # right joysticks y axis
 
-    # TODO: Handle stale input
+    # TODO: Handle stale joystick input if necessary
 
     # Apply exponential response curve
-    left_y_out = (1.2*1.043)**(left_y_in) - (1.2*1.043)**(left_y_in)
-    right_y_out = (1.2*1.043)**(right_y_in) - (1.2*1.043)**(right_y_in)
+    left_y_out = 1.2*(1.043**left_y_in) - 1.2 + 0.2*left_y_in
+    right_y_out = 1.2*(1.043**right_y_in) - 1.2 + 0.2*right_y_in
 
 
-def cmdVelCallback(data):
+def sendCommand(left_y_out, right_y_out):
     # Publish speeds to /drive/cmd_vel
     if estopFlag or watchdogFlag:
         hal.stop_motors()
@@ -68,7 +75,7 @@ def cmdVelCallback(data):
 
 def checkSafety(speed):
     # Implement speed scaling
-    return max(MIN_SPEED, min(speed, MAX_SPEED))
+    return max(MIN_SPEED, min(int(speed) if speed else 0, MAX_SPEED))
 
 if __name__ == "__main__":
     try:

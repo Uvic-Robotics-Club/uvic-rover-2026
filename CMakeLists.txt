@@ -39,10 +39,10 @@ set(ROVER_PACKAGES
     message_generation    # Needed only if you create custom messages.
 )
 # If you are using custom messages in your package, list the message files here.
-set(ROVER_MESSAGE_FILES
-    # Arm.msg
-    # Speed.msg
-)
+# set(ROVER_MESSAGE_FILES
+#     # Arm.msg
+#     # Speed.msg
+# )
 # List the ROS packages that this package will export to OTHERS.
 # This is used by catkin for dependency resolution. 
 # (Other packages need these packages to use this package)
@@ -50,7 +50,7 @@ set(ROVER_CATKIN_PACKAGES
     roscpp
     rospy
     std_msgs
-    message_runtime      # Required if using custom messages.
+    # message_runtime      # Required if using custom messages.
 )
 # ------------------------------------------------------------------------------
 # 3. Find and Setup Catkin
@@ -61,23 +61,23 @@ find_package(catkin REQUIRED COMPONENTS
 )
 # Ucomment only if you're writing Python code that should be imported like a library, e.g.: from uvic_rover.nav import gps_utils
 # Note: requires a setup.py file to be preset.
-# catkin_python_setup()
+catkin_python_setup()
 # ------------------------------------------------------------------------------
 # 4. Message Generation (Optional)
 # ------------------------------------------------------------------------------
 # Add custom message files, if any.
 # If you are not using custom messages, you can comment this section out.
-add_message_files(
-    FILES
-    ${ROVER_MESSAGE_FILES}
-)
+# add_message_files(
+#     FILES
+#     ${ROVER_MESSAGE_FILES}
+# )
 # Generate the custom messages (if any) so that they can be used at runtime.
 # List any dependencies that your messages have, typically standard messages.
-generate_messages(
-    DEPENDENCIES
-    std_msgs
-    sensor_msgs
-)
+# generate_messages(
+#     DEPENDENCIES
+#     std_msgs
+#     sensor_msgs
+# )
 # ------------------------------------------------------------------------------
 # 5. Declare Catkin Package
 # ------------------------------------------------------------------------------
@@ -110,6 +110,10 @@ include_directories(
 catkin_install_python(PROGRAMS
      nodes/odom/gps.py
      nodes/odom/imu.py
+     nodes/drive/DriveHAL.py
+     nodes/drive/motor_command.py
+     nodes/drive/watchdog.py
+     nodes/joy/joy_output.py
      DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 # Optionally, install your launch files so they can be run via roslaunch.
