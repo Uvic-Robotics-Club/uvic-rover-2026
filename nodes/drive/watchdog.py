@@ -29,7 +29,7 @@ class Watchdog:
 
     def check_watchdog(self, event):
         """Check if the watchdog has timed out."""
-        if time.time() - self.last_reset_time > self.timeout:
+        if time.time() - self.last_msg_time > self.timeout:
             if not self.triggered:
                 rospy.logerr("No /drive/cmd_vel messages received")
                 self.triggered = True

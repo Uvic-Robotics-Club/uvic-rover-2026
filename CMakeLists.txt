@@ -61,7 +61,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 # Ucomment only if you're writing Python code that should be imported like a library, e.g.: from uvic_rover.nav import gps_utils
 # Note: requires a setup.py file to be preset.
-catkin_python_setup()
+# catkin_python_setup()
 # ------------------------------------------------------------------------------
 # 4. Message Generation (Optional)
 # ------------------------------------------------------------------------------
