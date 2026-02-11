@@ -16,6 +16,11 @@ RUN apt-get update && apt-get install -y \
     x11-apps mesa-utils libgl1-mesa-glx \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Python dependencies for ROS nodes (pip requirements)
+COPY requirements.txt /tmp/requirements.txt
+RUN python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
+
+
 # Create a non-root user
 ARG USERNAME=ros
 ARG USER_UID=1000
@@ -54,6 +59,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-noetic-gps-common \
     ros-noetic-robot-localization \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies for ROS nodes (pip requirements)
+COPY requirements.txt /tmp/requirements.txt
+RUN python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
 
 # Create the catkin workspace directory
 RUN mkdir -p /catkin_ws/src

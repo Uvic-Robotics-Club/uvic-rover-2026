@@ -72,12 +72,58 @@ class ImuNode:
 
     # ----- serial helpers -----
     def _open_port(self):
-        for port in serial.tools.list_ports.comports():
-            if port.vid == ARDUINO_VID and port.pid == ARDUINO_PID:
-                rospy.loginfo(f"IMU detected on {port.device}")
-                return serial.Serial(port.device, SERIAL_BAUD, timeout=0.1)
-        rospy.logfatal("IMU device not found")
-        rospy.signal_shutdown("IMU device not found")
+        forced = rospy.get_param("~port", "").strip()
+        baud = int(rospy.get_param("~baud", SERIAL_BAUD))
+        timeout = float(rospy.get_param("~timeout", 0.1))
+
+        # 1) Explicit override (best / most deterministic)
+        if forced:
+            rospy.loginfo(f"Opening IMU on forced port: {forced} @ {baud}")
+            return serial.Serial(forced, baud, timeout=timeout)
+
+        ports = list(serial.tools.list_ports.comports())
+        if not ports:
+            rospy.logfatal(
+                "No serial ports found in this environment.\n"
+                "If you're on Windows + Docker Desktop, ensure the USB device is attached into WSL/docker."
+            )
+            rospy.signal_shutdown("No serial ports found")
+            raise rospy.ROSInterruptException
+
+        # 2) Filter by known VID/PID allowlist
+        matches = [p for p in ports if (p.vid, p.pid) in ALLOWED_VIDPID]
+
+        # Deterministic ordering
+        matches.sort(key=lambda p: p.device)
+        ports_sorted = sorted(ports, key=lambda p: p.device)
+
+        if len(matches) == 1:
+            p = matches[0]
+            rospy.loginfo(f"IMU detected on {p.device} (VID:PID={p.vid:04x}:{p.pid:04x})")
+            return serial.Serial(p.device, baud, timeout=timeout)
+
+        # 3) If only one port exists total, use it (common on dev machines)
+        if len(ports_sorted) == 1:
+            p = ports_sorted[0]
+            rospy.logwarn(f"No VID/PID match; using only available port: {p.device} ({p.description})")
+            return serial.Serial(p.device, baud, timeout=timeout)
+
+        # 4) Otherwise: ambiguous — force user to specify port
+        port_list = "\n".join(
+            [f"  - {p.device} | {p.description} | VID:PID={p.vid}:{p.pid}" for p in ports_sorted]
+        )
+        match_list = "\n".join(
+            [f"  - {p.device} | VID:PID={p.vid:04x}:{p.pid:04x}" for p in matches]
+        ) or "  (none)"
+
+        rospy.logfatal(
+            "IMU port is ambiguous.\n"
+            f"Ports seen:\n{port_list}\n"
+            f"VID/PID allowlist matches:\n{match_list}\n"
+            "Fix: pass the port explicitly, e.g.:\n"
+            "  rosrun uvic_rover imu.py _port:=/dev/ttyACM0"
+        )
+        rospy.signal_shutdown("Ambiguous serial ports")
         raise rospy.ROSInterruptException
 
     def _read_raw_sample(self):
