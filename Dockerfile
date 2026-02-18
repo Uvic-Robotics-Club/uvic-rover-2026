@@ -32,6 +32,9 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL >> /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
+# Allow non-root user to access serial devices like /dev/ttyACM0
+RUN usermod -aG dialout,plugdev $USERNAME
+
 # Set up environment variables for ROS
 RUN echo "source /opt/ros/noetic/setup.bash" >> /root/.bashrc \
     && echo "source /opt/ros/noetic/setup.bash" >> /home/$USERNAME/.bashrc

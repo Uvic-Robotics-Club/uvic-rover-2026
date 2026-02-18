@@ -21,6 +21,14 @@ SERIAL_BAUD   = 115_200
 EXPECTED_FIELDS = 13
 DEFAULT_RATE_HZ = 50
 
+# Allowlist of known USB VID/PID pairs for the IMU serial adapter(s)
+ALLOWED_VIDPID = {
+    (ARDUINO_VID, ARDUINO_PID),
+    # Add more here if you use other adapters:
+    # (0x10C4, 0xEA60),  # Silicon Labs CP210x (common)
+    # (0x239A, 0x8120),  # Adafruit / Pico variant (example)
+}
+
 # ───────── helper functions ─────────
 def _set_diag(matrix, var_xyz):
     """Fill a 3×3 covariance array (row-major) with variances on the diagonal."""
