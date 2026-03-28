@@ -138,7 +138,7 @@
     </collision>
   </link>
   <joint
-    name="Left Front Wheel Joint"
+    name="Left_Front_Wheel_Joint"
     type="continuous">
     <origin
       xyz="-0.460241876269187 -0.251142676859366 0.00300000000003453"
@@ -244,7 +244,7 @@
     </collision>
   </link>
   <joint
-    name="Left Bogie Wheel 1 Joint"
+    name="Left_Bogie_Wheel_1_Joint"
     type="continuous">
     <origin
       xyz="0.175945958234471 -0.0615759999999987 0.18423022948193"
@@ -297,7 +297,7 @@
     </collision>
   </link>
   <joint
-    name="Left Bogie Wheel 2 Joint"
+    name="Left_Bogie_Wheel_2_Joint"
     type="continuous">
     <origin
       xyz="0.175945958234468 -0.0615760000000021 -0.184230229481933"
@@ -403,7 +403,7 @@
     </collision>
   </link>
   <joint
-    name="Right Front Wheel Joint"
+    name="Right_Front_Wheel_Joint"
     type="continuous">
     <origin
       xyz="0.460241876269232 -0.251142676859283 0.00300000000000022"
@@ -509,7 +509,7 @@
     </collision>
   </link>
   <joint
-    name="Right Bogie Wheel 1 Joint"
+    name="Right_Bogie_Wheel_1_Joint"
     type="continuous">
     <origin
       xyz="0.175945958234469 -0.0615760000000018 -0.184230229481932"
@@ -562,7 +562,7 @@
     </collision>
   </link>
   <joint
-    name="Right Bogie Wheel 2 Joint"
+    name="Right_Bogie_Wheel_2_Joint"
     type="continuous">
     <origin
       xyz="0.17594595823447 -0.0615759999999979 0.184230229481932"
@@ -574,6 +574,77 @@
     <axis
       xyz="0 0 1" />
   </joint>
+
+  <!-- Transmission tags -->
+  <transmission name="trans_left_front_wheel">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Left_Front_Wheel_Joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_front_wheel_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_bogie_wheel1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Left_Bogie_Wheel_1_Joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_bogie_wheel1_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_bogie_wheel2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Left_Bogie_Wheel_2_Joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_bogie_wheel2_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_front_wheel">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Right_Front_Wheel_Joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_front_wheel_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_bogie_wheel1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Right_Bogie_Wheel_1_Joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_bogie_wheel1_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_bogie_wheel2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Right_Bogie_Wheel_2_Joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_bogie_wheel2_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+
+  <!-- Gazebo Plugin -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/drive_train</robotNamespace>
+    </plugin>
+  </gazebo>
+
   <!-- <gazebo>
     <plugin name="gazebo_ros_planar_move" filename="libgazebo_ros_planar_move.so">
       <commandTopic>cmd_vel</commandTopic>
