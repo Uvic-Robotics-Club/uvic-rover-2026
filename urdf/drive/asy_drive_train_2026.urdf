@@ -3,6 +3,18 @@
      Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
 <robot name="2025_ROVER_ASY">
+  <link name="world" />
+
+  <joint name="world_fixed" type="fixed">
+      <parent link="world" />
+      <child link="dummy" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
+  </joint>
+  <link name="dummy" />
+  <joint name="dummy_joint" type="fixed">
+      <parent link="dummy" />
+      <child link="Chassis" />
+  </joint>
 
   <link
     name="Chassis">
@@ -644,14 +656,5 @@
       <robotNamespace>/drive_train</robotNamespace>
     </plugin>
   </gazebo>
-
-  <!-- <gazebo>
-    <plugin name="gazebo_ros_planar_move" filename="libgazebo_ros_planar_move.so">
-      <commandTopic>cmd_vel</commandTopic>
-      <odometryTopic>odom</odometryTopic>
-      <odometryFrame>odom</odometryFrame>
-      <odometryRate>20.0</odometryRate>
-      <robotBaseFrame>Chassis</robotBaseFrame>
-    </plugin>
-  </gazebo> -->
+  
 </robot>
