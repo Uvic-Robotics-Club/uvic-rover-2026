@@ -110,6 +110,9 @@ include_directories(
 catkin_install_python(PROGRAMS
      nodes/odom/gps.py
      nodes/odom/imu.py
+     nodes/drive/motor_command.py
+     nodes/drive/watchdog.py
+     nodes/joy/joy_output.py
      DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 # Optionally, install your launch files so they can be run via roslaunch.
