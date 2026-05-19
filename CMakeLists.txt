@@ -36,6 +36,8 @@ set(ROVER_PACKAGES
     rospy                 # For writing Python nodes if needed.
     std_msgs              # Provides standard message types.
     sensor_msgs           # Provides sensor message types (e.g., for IMU/GPS data).
+    gps_common            # Provides GPS-related ROS messages such as GPSFix used by our GPS node.
+    robot_localization    # Provides EKF/UKF-based state estimation and sensor fusion for robot pose.
     message_generation    # Needed only if you create custom messages.
 )
 # If you are using custom messages in your package, list the message files here.
@@ -50,6 +52,8 @@ set(ROVER_CATKIN_PACKAGES
     roscpp
     rospy
     std_msgs
+    gps_common           # Provides GPS-related ROS messages such as GPSFix used by our GPS node.
+    robot_localization   # Provides EKF/UKF-based state estimation and sensor fusion for robot pose.
     message_runtime      # Required if using custom messages.
 )
 # ------------------------------------------------------------------------------
@@ -61,7 +65,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 # Ucomment only if you're writing Python code that should be imported like a library, e.g.: from uvic_rover.nav import gps_utils
 # Note: requires a setup.py file to be preset.
-# catkin_python_setup()
+catkin_python_setup()
 # ------------------------------------------------------------------------------
 # 4. Message Generation (Optional)
 # ------------------------------------------------------------------------------

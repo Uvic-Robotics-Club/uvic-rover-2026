@@ -1,20 +1,23 @@
 <launch>
-  <!-- 1) Sensor drivers -->
+  <!-- 1) Loaded parameters -->
+  <rosparam command="load" file="$(find uvic_rover)/config/serial_ports.yaml" />
+
+  <!-- 2) Sensor drivers -->
   <node pkg="uvic_rover" type="imu.py" name="imu_node" output="screen"/>
   <node pkg="uvic_rover" type="gps.py" name="gps_node" output="screen"/>
 
-  <!-- 2) Static TFs -->
+  <!-- 3) Static TFs -->
   <include file="$(find uvic_rover)/launch/robot_description.launch"/>
 
-  <!-- 3) Local EKF -->
+  <!-- 4) Local EKF -->
   <include file="$(find uvic_rover)/launch/ekf_local.launch"/>
 
-  <!-- 4) NavSat transform -->
+  <!-- 5) NavSat transform -->
   <include file="$(find uvic_rover)/launch/navsat_transform.launch"/>
 
-  <!-- 5) Global EKF -->
+  <!-- 6) Global EKF -->
   <include file="$(find uvic_rover)/launch/ekf_global.launch"/>
 
-  <!-- 6) (Optional) RViz -->
+  <!-- 7) (Optional) RViz -->
   <!-- … -->
 </launch>

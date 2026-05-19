@@ -8,6 +8,7 @@ import math
 import numpy as np
 import serial
 import serial.tools.list_ports
+from uvic_rover.serial_utils import open_serial_port
 from typing import Tuple
 from tf.transformations import euler_from_quaternion
 
@@ -59,12 +60,12 @@ class ImuData:
 # ───────── node class ─────────
 class ImuNode:
     def __init__(self, rate_hz: int = DEFAULT_RATE_HZ) -> None:
-        self._serial = self._open_port()
+        self._serial = open_serial_port("/serial_ports/imu")
         self._pub    = rospy.Publisher("/imu/data", Imu, queue_size=10)
         self._rate   = rospy.Rate(rate_hz)
         self._data   = ImuData()
         rospy.on_shutdown(self._shutdown)
-        rospy.loginfo("IMU node initialised")
+        rospy.loginfo("IMU: node initialised")
 
     # ----- main loop -----
     def spin(self) -> None:
@@ -79,61 +80,6 @@ class ImuNode:
                 rospy.logerr_throttle(1.0, f"Serial error: {err}")
 
     # ----- serial helpers -----
-    def _open_port(self):
-        forced = rospy.get_param("~port", "").strip()
-        baud = int(rospy.get_param("~baud", SERIAL_BAUD))
-        timeout = float(rospy.get_param("~timeout", 0.1))
-
-        # 1) Explicit override (best / most deterministic)
-        if forced:
-            rospy.loginfo(f"Opening IMU on forced port: {forced} @ {baud}")
-            return serial.Serial(forced, baud, timeout=timeout)
-
-        ports = list(serial.tools.list_ports.comports())
-        if not ports:
-            rospy.logfatal(
-                "No serial ports found in this environment.\n"
-                "If you're on Windows + Docker Desktop, ensure the USB device is attached into WSL/docker."
-            )
-            rospy.signal_shutdown("No serial ports found")
-            raise rospy.ROSInterruptException
-
-        # 2) Filter by known VID/PID allowlist
-        matches = [p for p in ports if (p.vid, p.pid) in ALLOWED_VIDPID]
-
-        # Deterministic ordering
-        matches.sort(key=lambda p: p.device)
-        ports_sorted = sorted(ports, key=lambda p: p.device)
-
-        if len(matches) == 1:
-            p = matches[0]
-            rospy.loginfo(f"IMU detected on {p.device} (VID:PID={p.vid:04x}:{p.pid:04x})")
-            return serial.Serial(p.device, baud, timeout=timeout)
-
-        # 3) If only one port exists total, use it (common on dev machines)
-        if len(ports_sorted) == 1:
-            p = ports_sorted[0]
-            rospy.logwarn(f"No VID/PID match; using only available port: {p.device} ({p.description})")
-            return serial.Serial(p.device, baud, timeout=timeout)
-
-        # 4) Otherwise: ambiguous — force user to specify port
-        port_list = "\n".join(
-            [f"  - {p.device} | {p.description} | VID:PID={p.vid}:{p.pid}" for p in ports_sorted]
-        )
-        match_list = "\n".join(
-            [f"  - {p.device} | VID:PID={p.vid:04x}:{p.pid:04x}" for p in matches]
-        ) or "  (none)"
-
-        rospy.logfatal(
-            "IMU port is ambiguous.\n"
-            f"Ports seen:\n{port_list}\n"
-            f"VID/PID allowlist matches:\n{match_list}\n"
-            "Fix: pass the port explicitly, e.g.:\n"
-            "  rosrun uvic_rover imu.py _port:=/dev/ttyACM0"
-        )
-        rospy.signal_shutdown("Ambiguous serial ports")
-        raise rospy.ROSInterruptException
-
     def _read_raw_sample(self):
         line = self._serial.readline().decode(errors="ignore").strip()
         if not line:
@@ -170,12 +116,12 @@ class ImuNode:
         # angular vel
         msg.angular_velocity.x, msg.angular_velocity.y, msg.angular_velocity.z = self._data.gyro
 
-        #TEMP
-        yaw = euler_from_quaternion([msg.orientation.x,
-            msg.orientation.y,
-            msg.orientation.z,
-            msg.orientation.w])[2]
-        print(f"yaw (deg): {math.degrees(yaw):.1f}")
+        # UCOMMENT TO PRINT YAW (degrees) FOR DEBUGGING
+        # yaw = euler_from_quaternion([msg.orientation.x,
+        #     msg.orientation.y,
+        #     msg.orientation.z,
+        #     msg.orientation.w])[2]
+        # print(f"yaw (deg): {math.degrees(yaw):.1f}")
 
                 # ====== covariance values (variance, not std-dev) ======
         gyro_var   = [1.5e-6] * 3                      # rad²/s²
