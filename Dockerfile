@@ -2,71 +2,151 @@
 # Development Image
 #########################################################
 
-# Base image: Ubuntu 20.04
+# Full ROS Noetic desktop image on Ubuntu 20.04.
+# Used for local development, including GUI tools like RViz/rqt.
 FROM osrf/ros:noetic-desktop-full AS dev
 
 LABEL maintainer="UVic Robotics <uvic.robotics@gmail.com>"
-# Avoid interactive prompts during apt installs
+
+# Avoid interactive prompts during apt installs.
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Basic dev tools
+# Basic dev tools + ROS development dependencies
+#
+# nano: simple terminal text editor.
+# vim: more powerful terminal text editor.
+# curl: downloads files/data from URLs.
+# git: version control for the repo.
+# git-lfs: handles large files tracked through Git LFS.
+# python3-pip: installs Python packages from requirements.txt.
+# build-essential: provides compilers and build tools like gcc, g++, and make.
+# lsb-release: lets scripts check Ubuntu/Linux distribution info.
+# gnupg2: manages package signing keys for apt repositories.
+# sudo: allows the non-root dev user to run admin commands.
+# iproute2: provides `ip`, useful for debugging WSL/Docker networking and display routing.
+# x11-apps: provides GUI test tools like `xeyes`.
+# mesa-utils: provides OpenGL test/debug tools like `glxinfo` and `glxgears`.
+# libgl1-mesa-glx: provides OpenGL libraries needed by GUI tools such as RViz.
+# ros-noetic-gps-common: provides GPS-related ROS message types/utilities.
+# ros-noetic-robot-localization: provides EKF/UKF localization and navsat_transform_node.
 RUN apt-get update && apt-get install -y \
-    nano vim curl git git-lfs python3-pip build-essential \
-    lsb-release gnupg2 sudo \
-    x11-apps mesa-utils libgl1-mesa-glx \
+    nano \
+    vim \
+    curl \
+    git \
+    git-lfs \
+    python3-pip \
+    build-essential \
+    lsb-release \
+    gnupg2 \
+    sudo \
+    iproute2 \
+    x11-apps \
+    mesa-utils \
+    libgl1-mesa-glx \
+    ros-noetic-gps-common \
+    ros-noetic-robot-localization \
     && rm -rf /var/lib/apt/lists/*
 
-# Create a non-root user
+# Install Python dependencies used by ROS Python nodes.
+COPY requirements.txt /tmp/requirements.txt
+RUN python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
+
+# Create a non-root user for normal development.
+# This avoids editing/building everything as root inside the container.
 ARG USERNAME=ros
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
 RUN groupadd --gid $USER_GID $USERNAME \
     && useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    && mkdir /home/$USERNAME/.config && chown $USER_UID:$USER_GID /home/$USERNAME/.config \
+    && mkdir /home/$USERNAME/.config \
+    && chown $USER_UID:$USER_GID /home/$USERNAME/.config \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL >> /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
-# Set up environment variables for ROS
-RUN echo "source /opt/ros/noetic/setup.bash" >> /root/.bashrc \
-    && echo "source /opt/ros/noetic/setup.bash" >> /home/$USERNAME/.bashrc
+# Add the dev user to hardware-access groups.
+# dialout: allows access to serial devices like /dev/ttyUSB0 and /dev/ttyACM0.
+# plugdev: commonly used for removable/plugged-in device permissions.
+RUN usermod -aG dialout,plugdev $USERNAME
 
-# Switch to non-root user and setup workspace
+# Configure every new terminal for ROS development.
+# This sources ROS Noetic, sources the Catkin workspace when it exists,
+# sets safe localhost defaults for ROS networking, and wraps catkin_make
+# so a successful build is immediately sourced in the current terminal.
+RUN echo "source /opt/ros/noetic/setup.bash" >> /root/.bashrc \
+    && { \
+        echo ""; \
+        echo "# ROS auto-setup"; \
+        echo "if [ -f /opt/ros/noetic/setup.bash ]; then"; \
+        echo "  source /opt/ros/noetic/setup.bash"; \
+        echo "fi"; \
+        echo ""; \
+        echo "if [ -f /catkin_ws/devel/setup.bash ]; then"; \
+        echo "  source /catkin_ws/devel/setup.bash"; \
+        echo "fi"; \
+        echo ""; \
+        echo "export ROS_MASTER_URI=\"\${ROS_MASTER_URI:-http://localhost:11311}\""; \
+        echo "export ROS_HOSTNAME=\"\${ROS_HOSTNAME:-localhost}\""; \
+        echo ""; \
+        echo "# Wrapper: after catkin_make succeeds, source the workspace in this terminal"; \
+        echo "catkin_make() {"; \
+        echo "  command catkin_make \"\$@\""; \
+        echo "  local status=\$?"; \
+        echo "  if [ \$status -eq 0 ] && [ -f /catkin_ws/devel/setup.bash ]; then"; \
+        echo "    source /catkin_ws/devel/setup.bash"; \
+        echo "  fi"; \
+        echo "  return \$status"; \
+        echo "}"; \
+    } >> /home/$USERNAME/.bashrc
+
+# Switch to the non-root development user and create the Catkin workspace.
 USER $USERNAME
 WORKDIR /catkin_ws
 RUN mkdir -p src
 
-# Default command
+# Start an interactive shell by default.
 CMD ["/bin/bash"]
 
 #########################################################
 # CI/CD Image
 #########################################################
+
+# Smaller ROS base image used for automated builds.
+# This stage intentionally excludes GUI/editor/debug tools from the dev image.
 FROM ros:noetic-ros-base AS ci
 
-LABEL maintainer="UVicRobotics <uvic.robotics@gmail.com>"
-# Prevent interactive prompts during apt installations
+LABEL maintainer="UVic Robotics <uvic.robotics@gmail.com>"
+
+# Avoid interactive prompts during apt installs.
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install minimal tools + runtime dependencies
+# Install only the tools and ROS dependencies needed to build/test in CI.
+# --no-install-recommends keeps the CI image smaller by avoiding optional packages.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git python3-pip \
+    git \
+    python3-pip \
     ros-noetic-gps-common \
     ros-noetic-robot-localization \
     && rm -rf /var/lib/apt/lists/*
 
-# Create the catkin workspace directory
+# Install Python dependencies used by ROS Python nodes.
+COPY requirements.txt /tmp/requirements.txt
+RUN python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
+
+# Create the Catkin workspace directory.
 RUN mkdir -p /catkin_ws/src
 WORKDIR /catkin_ws
 
-# Copy source code
+# Copy the repository into the CI workspace.
 COPY . src/uvic_rover/
 
-# Install dependencies listed in package.xml for all packages in the src 
+# Install ROS package dependencies declared in package.xml files.
 RUN rosdep update && \
     rosdep install --from-paths src --ignore-src -r -y
 
-# Build the catkin workspace
+# Build the Catkin workspace.
 RUN /bin/bash -c "source /opt/ros/noetic/setup.bash && catkin_make"
 
+# Start a shell with the built workspace sourced.
 CMD ["/bin/bash", "-c", "source /catkin_ws/devel/setup.bash && bash"]

@@ -8,6 +8,7 @@ import math
 import numpy as np
 import serial
 import serial.tools.list_ports
+from uvic_rover.serial_utils import open_serial_port
 from typing import Tuple
 from tf.transformations import euler_from_quaternion
 
@@ -20,6 +21,14 @@ ARDUINO_PID   = 0x0043
 SERIAL_BAUD   = 115_200
 EXPECTED_FIELDS = 13
 DEFAULT_RATE_HZ = 50
+
+# Allowlist of known USB VID/PID pairs for the IMU serial adapter(s)
+ALLOWED_VIDPID = {
+    (ARDUINO_VID, ARDUINO_PID),
+    # Add more here if you use other adapters:
+    # (0x10C4, 0xEA60),  # Silicon Labs CP210x (common)
+    # (0x239A, 0x8120),  # Adafruit / Pico variant (example)
+}
 
 # ───────── helper functions ─────────
 def _set_diag(matrix, var_xyz):
@@ -51,12 +60,12 @@ class ImuData:
 # ───────── node class ─────────
 class ImuNode:
     def __init__(self, rate_hz: int = DEFAULT_RATE_HZ) -> None:
-        self._serial = self._open_port()
+        self._serial = open_serial_port("/serial_ports/imu")
         self._pub    = rospy.Publisher("/imu/data", Imu, queue_size=10)
         self._rate   = rospy.Rate(rate_hz)
         self._data   = ImuData()
         rospy.on_shutdown(self._shutdown)
-        rospy.loginfo("IMU node initialised")
+        rospy.loginfo("IMU: node initialised")
 
     # ----- main loop -----
     def spin(self) -> None:
@@ -71,15 +80,6 @@ class ImuNode:
                 rospy.logerr_throttle(1.0, f"Serial error: {err}")
 
     # ----- serial helpers -----
-    def _open_port(self):
-        for port in serial.tools.list_ports.comports():
-            if port.vid == ARDUINO_VID and port.pid == ARDUINO_PID:
-                rospy.loginfo(f"IMU detected on {port.device}")
-                return serial.Serial(port.device, SERIAL_BAUD, timeout=0.1)
-        rospy.logfatal("IMU device not found")
-        rospy.signal_shutdown("IMU device not found")
-        raise rospy.ROSInterruptException
-
     def _read_raw_sample(self):
         line = self._serial.readline().decode(errors="ignore").strip()
         if not line:
@@ -116,12 +116,12 @@ class ImuNode:
         # angular vel
         msg.angular_velocity.x, msg.angular_velocity.y, msg.angular_velocity.z = self._data.gyro
 
-        #TEMP
-        yaw = euler_from_quaternion([msg.orientation.x,
-            msg.orientation.y,
-            msg.orientation.z,
-            msg.orientation.w])[2]
-        print(f"yaw (deg): {math.degrees(yaw):.1f}")
+        # UCOMMENT TO PRINT YAW (degrees) FOR DEBUGGING
+        # yaw = euler_from_quaternion([msg.orientation.x,
+        #     msg.orientation.y,
+        #     msg.orientation.z,
+        #     msg.orientation.w])[2]
+        # print(f"yaw (deg): {math.degrees(yaw):.1f}")
 
                 # ====== covariance values (variance, not std-dev) ======
         gyro_var   = [1.5e-6] * 3                      # rad²/s²
