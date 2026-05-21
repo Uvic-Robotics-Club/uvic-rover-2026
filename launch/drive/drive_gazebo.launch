@@ -1,0 +1,48 @@
+<launch>
+  <!-- Load URDF onto parameter server FIRST -->
+  <param name="robot_description"
+         textfile="$(find uvic_rover)/urdf/drive/asy_drive_train_2026.urdf" />
+
+  <!-- Start Gazebo with an empty world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="paused" value="true" />
+  </include>
+
+  <!-- Spawn the rover with initial joint positions so it starts upright -->
+  <node
+    name="spawn_model"
+    pkg="gazebo_ros"
+    type="spawn_model"
+    args="-file $(find uvic_rover)/urdf/drive/asy_drive_train_2026.urdf 
+      -urdf -model asy_drive_train_2026"
+    output="screen" />
+
+  <!-- Load controllers config into ROS parameter server -->
+  <rosparam file = "$(find uvic_rover)/config/drive_controller.yaml" command="load" />
+
+  <!-- Static transform between base_link and base_footprint -->
+  <node name="tf_footprint_base" pkg="tf" type="static_transform_publisher"
+        args="0 0 0 0 0 0 base_link base_footprint 40" />
+
+  <!-- Load and start all controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner"
+    args="--timeout 120
+    joint_state_controller
+    left_front_wheel_position_controller
+    left_bogie_wheel1_position_controller
+    left_bogie_wheel2_position_controller
+    right_front_wheel_position_controller
+    right_bogie_wheel1_position_controller
+    right_bogie_wheel2_position_controller"
+  output="screen" respawn="false" ns="drive_train" />
+
+  <!-- Fake calibration signal -->
+  <node name="fake_joint_calibration" pkg="rostopic" type="rostopic"
+        args="pub /calibrated std_msgs/Bool true" />
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+  output="screen" respawn="false">
+    <remap from="/joint_states" to="/drive_train/joint_states" />
+  </node>
+
+</launch>
