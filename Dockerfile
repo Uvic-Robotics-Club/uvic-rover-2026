@@ -4,7 +4,7 @@
 
 # Full ROS Noetic desktop image on Ubuntu 20.04.
 # Used for local development, including GUI tools like RViz/rqt.
-FROM osrf/ros:noetic-desktop-full AS dev
+FROM osrf/ros:noetic-robot AS dev
 
 LABEL maintainer="UVic Robotics <uvic.robotics@gmail.com>"
 
@@ -27,6 +27,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 # x11-apps: provides GUI test tools like `xeyes`.
 # mesa-utils: provides OpenGL test/debug tools like `glxinfo` and `glxgears`.
 # libgl1-mesa-glx: provides OpenGL libraries needed by GUI tools such as RViz.
+# iputils-ping: provides `ping` for checking container-to-container and host network reachability.
+# netcat-openbsd: provides `nc` for TCP/UDP port connectivity tests and basic container networking debugging.
 # ros-noetic-gps-common: provides GPS-related ROS message types/utilities.
 # ros-noetic-robot-localization: provides EKF/UKF localization and navsat_transform_node.
 RUN apt-get update && apt-get install -y \
@@ -44,6 +46,8 @@ RUN apt-get update && apt-get install -y \
     x11-apps \
     mesa-utils \
     libgl1-mesa-glx \
+    iputils-ping \
+    netcat-openbsd \
     ros-noetic-gps-common \
     ros-noetic-robot-localization \
     && rm -rf /var/lib/apt/lists/*

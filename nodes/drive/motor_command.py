@@ -1,87 +1,32 @@
 #!/usr/bin/env python3
+"""
+Motor Command Node
+------------------
+- Subscribes to /joy_processed for joystick inputs
+- Subscribes to /drive/watchdogResets for watchdog status
+- Publishes current drive outputs to /drive/cmd_vel at 10hz
+
+Joystick mapping:
+    axes[1] -> left motor input
+    axes[4] -> right motor input
+    buttons[0] -> manual e-stop
+
+Run with:
+    rosrun uvic_rover motor_command.py _interface:=<interface name>
+"""
 
 import rospy
-from std_msgs.msg import String
-from std_msgs.msg import Bool
-from sensor_msgs.msg import Joy 
-
-left_y_out = ""
-right_y_out = ""
-
-watchdogFlag = False
-estopFlag = False
+from std_msgs.msg import String, Bool
+from sensor_msgs.msg import Joy
 
 MAX_SPEED = 10
 MIN_SPEED = -10
+PUBLISH_RATE_HZ = 10
 
 
-
-def MotorCommand():
-    """
-        Converts /joy_processed messages from joysticks to /drive/cmd_vel messages for motors
-
-        Exponential curve applied to left_y_out, right_y_out in joyCallback,
-        Manual E-Stop and watchdog timeout applied in joyCallback,
-        Speed scaling applied within joyCallback,
-        Sends to HAL using sendCommand 
-    """
-    rospy.init_node("MotorCommand")
-
-    cmdVelPublisher = rospy.Publisher("/drive/cmd_vel", String, queue_size=10)
-    rospy.Subscriber("/joy_processed", Joy, joyCallback)
-    rospy.Subscriber("/drive/watchdogResets", Bool, watchDogCallback)
-    rate = rospy.Rate(10)
-
-    while not rospy.is_shutdown():
-        # Send command to HAL
-        sendCommand(left_y_out, right_y_out)
-        # Publish/log final drive commands with response curves:
-        cmd_vel_msg = "Left speed: %s, Right speed: %s" % (left_y_out, right_y_out)
-        cmdVelPublisher.publish(cmd_vel_msg)
-        rate.sleep()
-
-
-def watchDogCallback(msg):
-    # Check for watchdog timeout
-    global watchdogFlag
-    watchdogFlag = msg
-
-
-def joyCallback(msg):
-    global estopFlag, left_y_out, right_y_out
-    if msg.button[0]: # A button triggers manual estop
-        estopFlag = True
-        return
-    
-    left_y_in = msg.axes[1] # left joysticks y axis
-    right_y_in = msg.axes[4] # right joysticks y axis
-
-    # Apply exponential response curve
-    left_y_out = 1.2*(1.043**left_y_in) - 1.2 + 0.2*left_y_in
-    right_y_out = 1.2*(1.043**right_y_in) - 1.2 + 0.2*right_y_in
-
-    # Apply safety check
-    left_y_out = checkSafety(left_y_out)
-    right_y_out = checkSafety(right_y_out)
-
-
-def sendCommand(left_y_out, right_y_out):
-    # Send processed speeds to HAL
-    if estopFlag or watchdogFlag:
-        hal.stop_motors()
-    else:
-        hal.set_motor_speeds(left_y_out, right_y_out) 
-
-def checkSafety(speed):
-    # Implement speed scaling
-    return max(MIN_SPEED, min(int(speed) if speed else 0, MAX_SPEED))
-
-if __name__ == "__main__":
-    try:
-        MotorCommand()
-    except rospy.ROSInterruptionException:
-        pass
-
+# =============================================================================
+# Hardware Abstraction Layer (HAL)
+# =============================================================================
 class DriveHAL:
     def __init__(self, backend):
         if backend == "simulation":
@@ -92,26 +37,99 @@ class DriveHAL:
             self.interface = CANDriveInterface()
         else:
             raise ValueError("Unsupported backend")
-    
+
     def set_motor_speeds(self, left_speed, right_speed):
         self.interface.send_motor_commands(left_speed, right_speed)
 
     def stop_motors(self):
         self.interface.send_motor_commands(0, 0)
 
+
 class SimulatedDriveInterface:
     def send_motor_commands(self, left, right):
         # STUB: Publish to simulation
-        print(f"Simulated left speed {left}, right speed {right}")
+        print(f"Left speed {left}, Right speed {right}")
+
 
 class PWMDriveInterface:
     def send_motor_commands(self, left, right):
         # STUB: Publish to PWM
-        print(f"PWM left speed {left}, right speed {right}")
+        print(f"Left speed {left}, Right speed {right}")
+
 
 class CANDriveInterface:
     def send_motor_commands(self, left, right):
         # STUB: Publish to CAN
-        print(f"CAN left speed {left}, right speed {right}")
+        print(f"Left speed {left}, Right speed {right}")
 
-hal = DriveHAL("simulation")
+
+# =============================================================================
+# Motor Command Node
+# =============================================================================
+class MotorCommandNode:
+    def __init__(self):
+        rospy.init_node("motor_command", anonymous=False)
+        self.interface_name = rospy.get_param('~interface')
+        rospy.loginfo(f"Motor command node starting on interface: {self.interface_name}")
+
+        self.left_out = 0.0
+        self.right_out = 0.0
+        self.estop_flag = False
+        self.watchdog_flag = False
+        self.hal = DriveHAL(self.interface_name)
+
+        self.cmd_vel_pub = rospy.Publisher("/drive/cmd_vel", String, queue_size=10)
+        rospy.Subscriber("/joy_processed", Joy, self.joy_callback)
+        rospy.Subscriber("/drive/watchdogResets", Bool, self.watchdog_callback)
+
+        self.rate = rospy.Rate(PUBLISH_RATE_HZ)
+        rospy.loginfo("Motor command node ready")
+
+    def watchdog_callback(self, msg):
+        self.watchdog_flag = msg.data
+
+    def get_exponential_response(self, raw_input):
+        sign = 1 if raw_input >= 0 else -1
+        percentage = abs(raw_input) * 100
+
+        output = (1.2 * (1.043 ** percentage) - 1.2 + 0.2 * percentage) / 100
+        return round(sign * output, 2)
+
+    def joy_callback(self, msg):
+        if msg.buttons[0]:  # A button triggers manual e-stop
+            self.estop_flag = True
+            return
+
+        left_out, right_out = self.get_exponential_response(msg.axes[1]), self.get_exponential_response(msg.axes[4])
+        self.left_out = self.check_safety(left_out)
+        self.right_out = self.check_safety(right_out)
+
+    def check_safety(self, speed):
+        return max(MIN_SPEED, min(speed if speed else 0, MAX_SPEED))
+
+    def send_command(self):
+        if self.estop_flag or self.watchdog_flag:
+            self.hal.stop_motors()
+        else:
+            self.hal.set_motor_speeds(self.left_out, self.right_out)
+
+    def publish_drive_status(self):
+        cmd_vel_msg = f"Left speed: {self.left_out}, Right speed: {self.right_out}"
+        self.cmd_vel_pub.publish(String(data=cmd_vel_msg))
+
+    def run(self):
+        while not rospy.is_shutdown():
+            self.send_command()
+            self.publish_drive_status()
+            self.rate.sleep()
+
+
+# =============================================================================
+# Entry point
+# =============================================================================
+if __name__ == "__main__":
+    try:
+        node = MotorCommandNode()
+        node.run()
+    except rospy.ROSInterruptException:
+        pass
