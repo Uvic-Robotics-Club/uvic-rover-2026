@@ -1,0 +1,24 @@
+[Unit]
+Description=Arm Control Docker Container
+# Wait for the network and Docker to be ready before starting.
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/home/pi/uvic_rover
+
+# Bring up the arm control container.
+ExecStart=/usr/bin/docker compose -f docker-compose.pi.yml up -d
+
+# Bring it down cleanly on stop/reboot.
+ExecStop=/usr/bin/docker compose -f docker-compose.pi.yml down
+
+# If the container crashes, restart it after 10 seconds.
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

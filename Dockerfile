@@ -2,7 +2,8 @@
 # Development Image
 #########################################################
 
-# Base image: Ubuntu 20.04
+# Full ROS Noetic desktop image on Ubuntu 20.04.
+# Used for local development, including GUI tools like RViz/rqt.
 FROM osrf/ros:noetic-desktop-full AS dev
 
 LABEL maintainer="UVic Robotics <uvic.robotics@gmail.com>"
@@ -29,12 +30,37 @@ RUN groupadd --gid $USER_GID $USERNAME \
 
 # Set up environment variables for ROS
 RUN echo "source /opt/ros/noetic/setup.bash" >> /root/.bashrc \
-    && echo "source /opt/ros/noetic/setup.bash" >> /home/$USERNAME/.bashrc
+    && { \
+        echo ""; \
+        echo "# ROS auto-setup"; \
+        echo "if [ -f /opt/ros/noetic/setup.bash ]; then"; \
+        echo "  source /opt/ros/noetic/setup.bash"; \
+        echo "fi"; \
+        echo ""; \
+        echo "if [ -f /catkin_ws/devel/setup.bash ]; then"; \
+        echo "  source /catkin_ws/devel/setup.bash"; \
+        echo "fi"; \
+        echo ""; \
+        echo "export ROS_MASTER_URI=\"\${ROS_MASTER_URI:-http://localhost:11311}\""; \
+        echo "export ROS_HOSTNAME=\"\${ROS_HOSTNAME:-localhost}\""; \
+        echo ""; \
+        echo "# Wrapper: after catkin_make succeeds, source the workspace in this terminal"; \
+        echo "catkin_make() {"; \
+        echo "  command catkin_make \"\$@\""; \
+        echo "  local status=\$?"; \
+        echo "  if [ \$status -eq 0 ] && [ -f /catkin_ws/devel/setup.bash ]; then"; \
+        echo "    source /catkin_ws/devel/setup.bash"; \
+        echo "  fi"; \
+        echo "  return \$status"; \
+        echo "}"; \
+    } >> /home/$USERNAME/.bashrc
 
-# Switch to non-root user and setup workspace
+# Switch to the non-root development user and create the Catkin workspace.
+RUN mkdir -p /catkin_ws/src \
+    && chown -R $USERNAME:$USERNAME /catkin_ws
+
 USER $USERNAME
 WORKDIR /catkin_ws
-RUN mkdir -p src
 
 # Default command
 CMD ["/bin/bash"]
