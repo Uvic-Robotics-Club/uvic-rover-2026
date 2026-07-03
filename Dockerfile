@@ -96,3 +96,65 @@ RUN rosdep update && \
 RUN /bin/bash -c "source /opt/ros/noetic/setup.bash && catkin_make"
 
 CMD ["/bin/bash", "-c", "source /catkin_ws/devel/setup.bash && bash"]
+
+#########################################################
+# Pi Image
+#########################################################
+
+# Minimal ROS Noetic base image for Raspberry Pi 4B (arm64).
+# Used exclusively for CAN/arm control on the rover.
+# No GUI tools — this runs headless.
+FROM ros:noetic-ros-base AS pi
+
+LABEL maintainer="UVic Robotics <uvic.robotics@gmail.com>"
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install only what's needed for CAN communication and arm control.
+#
+# can-utils: provides candump, cansend, cangen for CAN bus interaction.
+# python3-pip: installs Python packages from requirements.txt.
+# build-essential: compilers and build tools for catkin_make.
+# iproute2: provides `ip` for CAN interface management (ip link set can0 up).
+# iputils-ping: provides `ping` for debugging network connectivity to Jetson.
+# netcat-openbsd: provides `nc` for checking ROS master reachability.
+# ros-noetic-rospy: Python ROS client library for writing nodes.
+# ros-noetic-std-msgs: standard ROS message types.
+# ros-noetic-sensor-msgs: sensor-related ROS message types.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    can-utils \
+    python3-pip \
+    build-essential \
+    iproute2 \
+    iputils-ping \
+    netcat-openbsd \
+    ros-noetic-rospy \
+    ros-noetic-std-msgs \
+    ros-noetic-sensor-msgs \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies.
+COPY requirements.txt /tmp/requirements.txt
+RUN python3 -m pip install --no-cache-dir -r /tmp/requirements.txt
+
+# Create the Catkin workspace.
+RUN mkdir -p /catkin_ws/src
+WORKDIR /catkin_ws
+
+# Copy the package into the workspace.
+COPY . src/uvic_rover/
+
+# Install ROS package dependencies from package.xml.
+RUN rosdep update && \
+    rosdep install --from-paths src --ignore-src -r -y
+
+# Build the workspace.
+RUN /bin/bash -c "source /opt/ros/noetic/setup.bash && catkin_make"
+
+# Source ROS and the workspace on every terminal session.
+RUN echo "source /opt/ros/noetic/setup.bash" >> /root/.bashrc \
+    && echo "source /catkin_ws/devel/setup.bash" >> /root/.bashrc
+
+# Start a shell with the workspace sourced.
+# Make sure to start roscore and the pi.launch file
+CMD ["/bin/bash", "-c", "source /catkin_ws/devel/setup.bash && roslaunch uvic_rover arm_control.launch"]

@@ -1,0 +1,22 @@
+services:
+  arm_control:
+    build:
+      context: .
+      target: pi  # Builds only the pi stage from the Dockerfile
+    network_mode: host  # Required so the container can access can0 on the host
+    privileged: true  # Required for CAN interface access inside the container
+    environment:
+      # Point to the Jetson as the ROS master.
+      # Update JETSON_IP to match the static IP assigned to the Jetson
+      # on the internal ethernet network (e.g. 10.0.0.1).
+      - ROS_MASTER_URI=http://${JETSON_IP:-10.0.0.1}:11311
+      # The Pi's own IP on the internal ethernet network.
+      - ROS_IP=${PI_IP:-10.0.0.2}
+    volumes:
+      # Mount the repo into the container so code changes from git pull
+      # are reflected without rebuilding the image.
+      - .:/catkin_ws/src/uvic_rover
+    devices:
+      # Pass the CAN interface through to the container.
+      - /dev/can0:/dev/can0
+    restart: unless-stopped

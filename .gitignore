@@ -30,3 +30,5 @@ bin/
 .#*
 .dir-locals.el
 
+# Environment Variables
+.env
