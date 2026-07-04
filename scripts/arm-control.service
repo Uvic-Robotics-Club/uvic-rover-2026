@@ -8,7 +8,7 @@ Requires=docker.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-WorkingDirectory=/home/pi/uvic_rover
+WorkingDirectory=/home/pi/uvic_rover_2026
 
 # Bring up the arm control container.
 ExecStart=/usr/bin/docker compose -f docker-compose.pi.yml up -d
