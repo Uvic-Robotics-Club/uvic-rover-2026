@@ -1,3 +1,3 @@
 <launch>
-    <node name="arm_control" pkg="uvic_rover" type="arm_control_node.py" output="screen"/>
+    <node name="arm_control" pkg="uvic_rover" type="arm_control.py" output="screen"/>
 </launch>

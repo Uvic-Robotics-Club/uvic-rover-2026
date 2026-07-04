@@ -190,6 +190,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-noetic-rospy \
     ros-noetic-std-msgs \
     ros-noetic-sensor-msgs \
+    ros-noetic-gps-common \
+    ros-noetic-robot-localization \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies.
@@ -216,4 +218,4 @@ RUN echo "source /opt/ros/noetic/setup.bash" >> /root/.bashrc \
 
 # Start a shell with the workspace sourced.
 # Make sure to start roscore and the pi.launch file
-CMD ["/bin/bash", "-c", "source /catkin_ws/devel/setup.bash && roslaunch uvic_rover arm_control.launch"]
+CMD ["/bin/bash", "-c", "source /catkin_ws/devel/setup.bash && roslaunch uvic_rover pi.launch"]
