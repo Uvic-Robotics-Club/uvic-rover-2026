@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot name="2025_ROVER_ASY">
+  <link name="world" />
+
+  <joint name="world_fixed" type="fixed">
+      <parent link="world" />
+      <child link="dummy" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
+  </joint>
+  <link name="dummy" />
+  <joint name="dummy_joint" type="fixed">
+      <parent link="dummy" />
+      <child link="Chassis" />
+  </joint>
+
+  <link
+    name="Chassis">
+    <inertial>
+      <origin
+        xyz="0.564427546477429 -1.34173868409253 0.695744656327743"
+        rpy="0 0 0" />
+      <mass
+        value="28.7018898926924" />
+      <inertia
+        ixx="0.29472969043508"
+        ixy="-0.000237109186572857"
+        ixz="0.000497585627623536"
+        iyy="0.332633986462551"
+        iyz="0.00361706298855582"
+        izz="0.108945987176568" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Chassis.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Chassis.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="Left Rocker">
+    <inertial>
+      <origin
+        xyz="-0.403919538320734 -0.22328405743632 -0.0599754094377352"
+        rpy="0 0 0" />
+      <mass
+        value="3.06660121072908" />
+      <inertia
+        ixx="0.00502297634649429"
+        ixy="-0.000326382645979822"
+        ixz="-7.81046500012958E-06"
+        iyy="0.00557629680945313"
+        iyz="3.72449829937343E-06"
+        izz="0.00218105190615842" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Left Rocker.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Left Rocker.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Left Rocker Joint"
+    type="continuous">
+    <origin
+      xyz="0.921912579825089 -1.22343460511792 0.50953409153941"
+      rpy="1.57079632679495 0 1.57354730849476" />
+    <parent
+      link="Chassis" />
+    <child
+      link="Left Rocker" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="Left Front Wheel">
+    <inertial>
+      <origin
+        xyz="0.0803810942366472 -1.1508428210405E-08 -8.40117669875795E-10"
+        rpy="0 0 0" />
+      <mass
+        value="4.55283541763146" />
+      <inertia
+        ixx="0.0362263462870138"
+        ixy="1.31784966582649E-10"
+        ixz="9.62051114092961E-12"
+        iyy="0.0209493700321966"
+        iyz="2.6525830143509E-10"
+        izz="0.0209493664179867" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Left Front Wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Left Front Wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Left_Front_Wheel_Joint"
+    type="continuous">
+    <origin
+      xyz="-0.460241876269187 -0.251142676859366 0.00300000000003453"
+      rpy="0.346894155603661 -1.57079631189374 0.962086590127429" />
+    <parent
+      link="Left Rocker" />
+    <child
+      link="Left Front Wheel" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="Left Bogie">
+    <inertial>
+      <origin
+        xyz="0.171084437414008 0.0443669758238091 1.95219201537533E-06"
+        rpy="0 0 0" />
+      <mass
+        value="5.54056536421925" />
+      <inertia
+        ixx="0.00972244998543849"
+        ixy="-8.13070142673459E-08"
+        ixz="4.95885899684978E-12"
+        iyy="0.00267244772802555"
+        iyz="9.3085805446736E-07"
+        izz="0.00968308814470141" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Left Bogie.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Left Bogie.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Left Bogie Joint"
+    type="continuous">
+    <origin
+      xyz="0.158205316010234 -0.0767617874886743 0.0304999999999972"
+      rpy="-1.57079632679493 0 -1.56640478252846" />
+    <parent
+      link="Left Rocker" />
+    <child
+      link="Left Bogie" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="Left Bogie Wheel 1">
+    <inertial>
+      <origin
+        xyz="9.64198340613898E-09 6.33892849322137E-09 0.0438050942366472"
+        rpy="0 0 0" />
+      <mass
+        value="4.55283541763146" />
+      <inertia
+        ixx="0.0209493689491762"
+        ixy="1.67681002416487E-09"
+        ixz="-1.10412150608683E-10"
+        iyy="0.0209493675010071"
+        iyz="-7.25880686701169E-11"
+        izz="0.0362263462870137" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Left Bogie Wheel 1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Left Bogie Wheel 1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Left_Bogie_Wheel_1_Joint"
+    type="continuous">
+    <origin
+      xyz="0.175945958234471 -0.0615759999999987 0.18423022948193"
+      rpy="-1.57079632679488 -0.508707774402449 3.14159265358978" />
+    <parent
+      link="Left Bogie" />
+    <child
+      link="Left Bogie Wheel 1" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="Left Bogie Wheel 2">
+    <inertial>
+      <origin
+        xyz="9.64198365593916E-09 6.33892827117677E-09 0.0438050942366475"
+        rpy="0 0 0" />
+      <mass
+        value="4.55283541763146" />
+      <inertia
+        ixx="0.0209493689491762"
+        ixy="1.67681002503223E-09"
+        ixz="-1.10412133246202E-10"
+        iyy="0.0209493675010071"
+        iyz="-7.25882837690516E-11"
+        izz="0.0362263462870137" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Left Bogie Wheel 2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Left Bogie Wheel 2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Left_Bogie_Wheel_2_Joint"
+    type="continuous">
+    <origin
+      xyz="0.175945958234468 -0.0615760000000021 -0.184230229481933"
+      rpy="1.57079632679486 -1.06208855239245 0" />
+    <parent
+      link="Left Bogie" />
+    <child
+      link="Left Bogie Wheel 2" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="Right Rocker">
+    <inertial>
+      <origin
+        xyz="0.404202972143678 -0.223239823890213 -0.0599754114865064"
+        rpy="0 0 0" />
+      <mass
+        value="3.06660105538394" />
+      <inertia
+        ixx="0.00502298872607975"
+        ixy="0.000210045462857487"
+        ixz="-3.33295110360578E-06"
+        iyy="0.0055762841618886"
+        iyz="2.58462289034438E-06"
+        izz="0.00218105182432725" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Right Rocker.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Right Rocker.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Right Rocker Joint"
+    type="continuous">
+    <origin
+      xyz="0.333333737020984 -1.22366239722167 0.509229992213948"
+      rpy="1.5707963267949 0 -1.5735473084948" />
+    <parent
+      link="Chassis" />
+    <child
+      link="Right Rocker" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="Right Front Wheel">
+    <inertial>
+      <origin
+        xyz="0.0803810942366472 -1.15084279328492E-08 -8.40118197231732E-10"
+        rpy="0 0 0" />
+      <mass
+        value="4.55283541763146" />
+      <inertia
+        ixx="0.0362263462870137"
+        ixy="1.31784998769901E-10"
+        ixz="9.62041618514809E-12"
+        iyy="0.0209493700321966"
+        iyz="2.6525830186877E-10"
+        izz="0.0209493664179867" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Right Front Wheel.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Right Front Wheel.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Right_Front_Wheel_Joint"
+    type="continuous">
+    <origin
+      xyz="0.460241876269232 -0.251142676859283 0.00300000000000022"
+      rpy="0.261799387799056 -1.5707963267949 0" />
+    <parent
+      link="Right Rocker" />
+    <child
+      link="Right Front Wheel" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="Right Bogie">
+    <inertial>
+      <origin
+        xyz="0.171084437358874 0.0443669758162707 1.9534833577417E-06"
+        rpy="0 0 0" />
+      <mass
+        value="5.5405653649061" />
+      <inertia
+        ixx="0.00972244998383798"
+        ixy="-8.13030967750798E-08"
+        ixz="-2.01586111322203E-11"
+        iyy="0.00267244772242669"
+        iyz="9.30840400495804E-07"
+        izz="0.00968308813416261" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Right Bogie.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Right Bogie.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Right Bogie Joint"
+    type="continuous">
+    <origin
+      xyz="-0.156139037771596 -0.0755688211914241 0.0304999999999996"
+      rpy="-1.57079632679489 0 -1.56662951346645" />
+    <parent
+      link="Right Rocker" />
+    <child
+      link="Right Bogie" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="Right Bogie Wheel 1">
+    <inertial>
+      <origin
+        xyz="9.64198398900606E-09 6.33892860424368E-09 0.0438050942366472"
+        rpy="0 0 0" />
+      <mass
+        value="4.55283541763146" />
+      <inertia
+        ixx="0.0209493689491762"
+        ixy="1.67681003197112E-09"
+        ixz="-1.10412006838393E-10"
+        iyy="0.0209493675010071"
+        iyz="-7.25881463210153E-11"
+        izz="0.0362263462870137" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Right Bogie Wheel 1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Right Bogie Wheel 1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Right_Bogie_Wheel_1_Joint"
+    type="continuous">
+    <origin
+      xyz="0.175945958234469 -0.0615760000000018 -0.184230229481932"
+      rpy="1.57079632679488 -1.06208855239245 0" />
+    <parent
+      link="Right Bogie" />
+    <child
+      link="Right Bogie Wheel 1" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="Right Bogie Wheel 2">
+    <inertial>
+      <origin
+        xyz="9.64198398900606E-09 6.33892816015447E-09 0.0438050942366472"
+        rpy="0 0 0" />
+      <mass
+        value="4.55283541763146" />
+      <inertia
+        ixx="0.0209493689491762"
+        ixy="1.67681002416487E-09"
+        ixz="-1.10412010826224E-10"
+        iyy="0.0209493675010071"
+        iyz="-7.25881548099795E-11"
+        izz="0.0362263462870137" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Right Bogie Wheel 2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://uvic_rover/meshes/drive/Right Bogie Wheel 2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Right_Bogie_Wheel_2_Joint"
+    type="continuous">
+    <origin
+      xyz="0.17594595823447 -0.0615759999999979 0.184230229481932"
+      rpy="-1.57079632679488 -0.508707774402448 3.14159265358979" />
+    <parent
+      link="Right Bogie" />
+    <child
+      link="Right Bogie Wheel 2" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+
+  <!-- Transmission tags -->
+  <transmission name="trans_left_front_wheel">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Left_Front_Wheel_Joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_front_wheel_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_bogie_wheel1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Left_Bogie_Wheel_1_Joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_bogie_wheel1_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_left_bogie_wheel2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Left_Bogie_Wheel_2_Joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_bogie_wheel2_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_front_wheel">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Right_Front_Wheel_Joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_front_wheel_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_bogie_wheel1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Right_Bogie_Wheel_1_Joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_bogie_wheel1_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="trans_right_bogie_wheel2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="Right_Bogie_Wheel_2_Joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_bogie_wheel2_motor">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+
+  <!-- Gazebo Plugin -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/drive_train</robotNamespace>
+    </plugin>
+  </gazebo>
+  
+</robot>

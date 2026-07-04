@@ -6,6 +6,7 @@ from sensor_msgs.msg import NavSatFix
 from gps_common.msg import GPSFix
 import serial
 import serial.tools.list_ports
+from uvic_rover.serial_utils import open_serial_port
 # Create a serial connection for the GPS connection using default speed and
 # a slightly higher timeout (GPS modules typically update once a second).
 # These are the defaults you should use for the GPS FeatherWing.
@@ -13,19 +14,6 @@ import serial.tools.list_ports
 #uart = busio.UART(board.TX, board.RX, baudrate=9600, timeout=10)
 
 # for a computer, use the pyserial library for uart access
-
-def find_gps_port():
-    # Iterate over all available serial ports
-    ports = list(serial.tools.list_ports.comports())
-    for port in ports:
-        #print(f"DEBUG: Device: {port.device}, VID: {port.vid}, PID: {port.pid}, Description: {port.description}")
-        # Check if the port has the desired vendor and product ID
-        if port.vid == 0x10c4 and port.pid == 0xea60: # If correct GPS
-            rospy.loginfo(f"GPS device found on {port.device}")
-            return serial.Serial(port.device, baudrate=9600, timeout=10)      
-    rospy.logfatal("GPS device not found!")
-    rospy.signal_shutdown("GPS device not found!")
-    raise rospy.ROSInterruptException("GPS device not found!")
 
 def main():
     # Initialize GPS Ros node 
@@ -43,7 +31,7 @@ def main():
 
     rate = rospy.Rate(1)
 
-    uart = find_gps_port()
+    uart = open_serial_port("/serial_ports/gps")
     # Create a GPS module instance.
     gps = adafruit_gps.GPS(uart, debug=False)  # Use UART/pyserial
     # gps = adafruit_gps.GPS_GtopI2C(i2c, debug=False)  # Use I2C interface
@@ -71,6 +59,7 @@ def main():
     # You can also speed up the rate, but don't go too fast or else you can lose
     # data during parsing.  This would be twice a second (2hz, 500ms delay):
     # gps.send_command(b'PMTK220,500')
+    rospy.loginfo("GPS: node initialised")
 
     # Main loop runs forever printing the location, etc. every second.
     last_print = time.monotonic()
@@ -86,7 +75,7 @@ def main():
             last_print = current
             if not gps.has_fix:
                 # Try again if we don't have a fix yet.
-                rospy.logdebug("Waiting for fix...")
+                rospy.loginfo_throttle(10, "[ODOM] GPS Waiting for fix...")
                 continue
             # We have a fix! (gps.has_fix is true)
             

@@ -1,0 +1,20 @@
+serial_ports:
+  imu:
+    name: "IMU"
+    port: "/dev/ttyACM0"
+    baud: 115200
+    timeout: 0.1
+    vidpids:
+      - "239a:8120"
+    allow_single_port_fallback: false
+    rosrun_hint: "rosrun uvic_rover imu.py _port:=/dev/ttyACM0"
+
+  gps:
+    name: "GPS"
+    port: "/dev/ttyUSB0"
+    baud: 9600
+    timeout: 10.0
+    vidpids:
+      - "10c4:ea60"
+    allow_single_port_fallback: false
+    rosrun_hint: "rosrun uvic_rover gps.py _port:=/dev/ttyUSB0"
