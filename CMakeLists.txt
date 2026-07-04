@@ -114,7 +114,7 @@ include_directories(
 catkin_install_python(PROGRAMS
      nodes/odom/gps.py
      nodes/odom/imu.py
-     nodes/arm_control.py
+     nodes/arm/arm_control.py
      nodes/drive/motor_command.py
      nodes/drive/watchdog.py
      nodes/joy/joy_output.py
